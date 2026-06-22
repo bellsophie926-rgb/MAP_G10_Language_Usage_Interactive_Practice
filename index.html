@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Volaria MAP G10 Language Usage Interactive Practice</title>
+<style>
+:root {
+  --bg: #f6f7fb; --panel: #ffffff; --text: #1f2937; --muted: #6b7280;
+  --line: #e5e7eb; --accent: #365a8c; --accent-2: #e8eef8;
+  --good: #0f7b52; --bad: #b42318; --warn: #a15c07; --note: #fff3bf;
+  --shadow: 0 12px 28px rgba(15, 23, 42, .08);
+}
+* { box-sizing: border-box; }
+body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, "Noto Sans SC", sans-serif; background:var(--bg); color:var(--text); }
+header { position: sticky; top:0; z-index:20; background:linear-gradient(120deg,#17345f,#496d9e); color:white; padding:16px 24px; box-shadow:var(--shadow); }
+header h1 { margin:0; font-size:22px; letter-spacing:.2px; }
+header .sub { margin-top:5px; opacity:.9; font-size:13px; }
+.topbar { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:12px; }
+.timer, .scorebox, .modebox { background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.22); border-radius:12px; padding:8px 12px; font-weight:650; }
+button { font-family:inherit; }
+.btn { border:0; border-radius:10px; padding:9px 12px; cursor:pointer; background:var(--accent); color:white; font-weight:700; }
+.btn.secondary { background:#eef2f7; color:#24364c; border:1px solid var(--line); }
+.btn.warn { background:#8a4b07; }
+.btn.small { padding:6px 9px; font-size:12px; }
+.layout { display:grid; grid-template-columns: 320px minmax(0,1fr); gap:18px; padding:18px; max-width:1480px; margin:0 auto; }
+.sidebar { position:sticky; top:112px; align-self:start; display:flex; flex-direction:column; gap:14px; max-height:calc(100vh - 130px); overflow:auto; }
+.card { background:var(--panel); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow); padding:16px; }
+.card h2 { margin:0 0 10px; font-size:16px; }
+.card h3 { margin:14px 0 8px; font-size:14px; color:#24364c; }
+.muted { color:var(--muted); font-size:13px; line-height:1.55; }
+.progressbar { height:10px; background:#edf0f4; border-radius:999px; overflow:hidden; margin:10px 0 6px; }
+.progressbar div { height:100%; width:0%; background:linear-gradient(90deg,#315a92,#35a078); transition:.25s; }
+.navgrid { display:grid; grid-template-columns: repeat(5, 1fr); gap:7px; }
+.qnav { height:36px; border-radius:10px; border:1px solid var(--line); background:#fff; cursor:pointer; font-weight:800; color:#334155; }
+.qnav.active { outline:3px solid #afc5e8; background:#edf4ff; }
+.qnav.correct { background:#e8f7ef; border-color:#9edabb; color:var(--good); }
+.qnav.wrong { background:#fff0ef; border-color:#f3a69f; color:var(--bad); }
+.qnav.flagged::after { content:'⚑'; margin-left:2px; color:var(--warn); }
+.main { display:grid; grid-template-columns: minmax(0,1.12fr) minmax(360px,.88fr); gap:18px; align-items:start; }
+.workarea { min-height:430px; }
+.parttag { display:inline-flex; padding:5px 9px; border-radius:999px; background:var(--accent-2); color:var(--accent); font-weight:800; font-size:12px; }
+.skilltag { display:inline-flex; padding:5px 9px; border-radius:999px; background:#f4f4f5; color:#52525b; font-weight:650; font-size:12px; margin-left:6px; }
+.question-title { font-size:20px; margin:12px 0 8px; }
+.stem { font-size:18px; line-height:1.6; background:#fafafa; border:1px solid var(--line); border-radius:14px; padding:15px; }
+.passage { border:1px solid #d9e1ec; border-radius:14px; background:#fbfdff; padding:14px; line-height:1.62; max-height:310px; overflow:auto; margin-bottom:14px; }
+.passage p { margin:7px 0; }
+.choice { width:100%; text-align:left; margin:10px 0; padding:13px 14px; border-radius:14px; background:white; border:1.5px solid var(--line); cursor:pointer; font-size:15px; line-height:1.45; transition:.15s; }
+.choice:hover { border-color:#9bb4d7; background:#f8fbff; }
+.choice.selected { border-color:#315a92; background:#eef5ff; }
+.choice.correct { border-color:#22a06b; background:#eaf8f1; }
+.choice.wrong { border-color:#d92d20; background:#fff1f0; }
+.feedback { min-height:180px; border-radius:16px; padding:15px; background:#fafafa; border:1px solid var(--line); }
+.feedback.good { background:#edfdf5; border-color:#a7e3c4; }
+.feedback.bad { background:#fff5f5; border-color:#f0aaa4; }
+.feedback h2 { margin:0 0 8px; }
+.explainblock { margin-top:10px; padding:12px; border-left:4px solid #6e8fbd; background:white; border-radius:10px; line-height:1.55; }
+.explainblock strong { color:#1f3c66; }
+.controls { display:flex; gap:9px; flex-wrap:wrap; margin-top:14px; }
+.annotation-tools { display:flex; gap:7px; flex-wrap:wrap; margin:10px 0; }
+.toolchip { border:1px solid var(--line); background:#fff; color:#334155; border-radius:999px; padding:6px 9px; cursor:pointer; font-size:12px; font-weight:700; }
+.toolchip:hover { background:#eef5ff; }
+.highlight { background: #ffed87; border-radius:4px; padding:0 2px; box-shadow: inset 0 -2px 0 rgba(143,100,0,.18); }
+.annotation { background:#eef5ff; border:1px solid #bfd2ed; color:#1f3c66; border-radius:4px; padding:0 2px; }
+textarea { width:100%; min-height:100px; resize:vertical; padding:10px; border:1px solid var(--line); border-radius:12px; font-family:inherit; line-height:1.5; }
+.stats { display:grid; gap:7px; }
+.statrow { display:flex; justify-content:space-between; gap:10px; border-bottom:1px dashed #e5e7eb; padding:5px 0; font-size:13px; }
+.report { display:none; margin-top:18px; }
+.report.visible { display:block; }
+.report table { width:100%; border-collapse:collapse; font-size:13px; background:white; }
+.report th, .report td { border:1px solid var(--line); padding:8px; vertical-align:top; }
+.report th { background:#f3f6fb; text-align:left; }
+.keyline { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin:8px 0; }
+.badge { border-radius:999px; padding:4px 8px; font-size:12px; font-weight:800; background:#edf2f7; }
+.badge.good { background:#e7f8ef; color:var(--good); }
+.badge.bad { background:#fff0ef; color:var(--bad); }
+.badge.warn { background:#fff7e6; color:var(--warn); }
+.footer-note { padding:18px; text-align:center; color:var(--muted); font-size:12px; }
+@media (max-width: 1050px) {
+  .layout { grid-template-columns:1fr; }
+  .sidebar { position:relative; top:0; max-height:none; }
+  .main { grid-template-columns:1fr; }
+}
+@media print {
+  header, .sidebar, .controls, .annotation-tools { display:none !important; }
+  .layout, .main { display:block; padding:0; }
+  .card { box-shadow:none; break-inside:avoid; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Volaria MAP Grade 10 Language Usage｜Interactive Diagnostic Practice</h1>
+  <div class="sub">30-minute MAP-style practice · 即时反馈 · 逐题解释 · Annotation Tool 标注工具 · Local progress saved in browser</div>
+  <div class="topbar">
+    <div class="timer">⏱ <span id="timer">30:00</span></div>
+    <div class="scorebox">Score: <span id="score">0</span>/<span id="answered">0</span> answered · Total 27</div>
+    <div class="modebox">Current: Q<span id="currentNo">1</span></div>
+    <button class="btn small" onclick="startTimer()">Start Timer</button>
+    <button class="btn small secondary" onclick="pauseTimer()">Pause</button>
+    <button class="btn small secondary" onclick="resetAll(false)">Reset Answers</button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <section class="card">
+      <h2>Progress｜进度</h2>
+      <div class="progressbar"><div id="progressFill"></div></div>
+      <div class="muted" id="progressText">0/27 completed</div>
+      <div class="keyline"><span class="badge good">Green = correct</span><span class="badge bad">Red = wrong</span><span class="badge warn">⚑ = flagged</span></div>
+      <div class="navgrid" id="navgrid"></div>
+    </section>
+
+    <section class="card">
+      <h2>Annotation Tool｜标注工具</h2>
+      <div class="muted">在左侧题干/段落中选中文字，然后点击标注按钮。适合标：subject, verb, clause, modifier, transition, trap。</div>
+      <div class="annotation-tools">
+        <button class="toolchip" onclick="highlightSelection('highlight')">Highlight</button>
+        <button class="toolchip" onclick="highlightSelection('annotation')">Grammar clue</button>
+        <button class="toolchip" onclick="appendTag('SUBJECT')">+ Subject</button>
+        <button class="toolchip" onclick="appendTag('VERB')">+ Verb</button>
+        <button class="toolchip" onclick="appendTag('CLAUSE')">+ Clause</button>
+        <button class="toolchip" onclick="appendTag('MODIFIER')">+ Modifier</button>
+        <button class="toolchip" onclick="appendTag('TRAP')">+ Trap</button>
+      </div>
+      <textarea id="noteBox" placeholder="Write Volaria's reasoning notes here...
+例：Q2 comma splice：逗号两边都是完整句，所以不能只用 comma。"></textarea>
+      <div class="controls">
+        <button class="btn small secondary" onclick="saveNotes()">Save Note</button>
+        <button class="btn small secondary" onclick="clearAnnotations()">Clear Current Annotations</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Error Pattern Snapshot｜错因快照</h2>
+      <div class="stats" id="statsBox"><div class="muted">Answer questions to build a weakness profile.</div></div>
+    </section>
+  </aside>
+
+  <main class="main">
+    <section class="card workarea">
+      <div><span class="parttag" id="partTag">Part A</span><span class="skilltag" id="skillTag"></span></div>
+      <h2 class="question-title" id="qTitle">Question 1</h2>
+      <div id="workArea">
+        <div id="passageBox" class="passage" style="display:none"></div>
+        <div id="stemBox" class="stem"></div>
+      </div>
+      <div class="controls">
+        <button class="btn secondary" onclick="prevQuestion()">← Previous</button>
+        <button class="btn secondary" onclick="toggleFlag()">⚑ Flag / Unflag</button>
+        <button class="btn" onclick="nextQuestion()">Next →</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Choose the best answer｜选择最佳答案</h2>
+      <div id="choicesBox"></div>
+      <div class="feedback" id="feedbackBox">
+        <h2>Feedback will appear here.</h2>
+        <div class="muted">选择答案后，会立刻显示正确/错误、考点、解释和 trap analysis。</div>
+      </div>
+      <div class="controls">
+        <button class="btn secondary" onclick="showAnswer()">Show Answer</button>
+        <button class="btn warn" onclick="finishTest()">Finish & Generate Report</button>
+      </div>
+    </section>
+
+    <section class="card report" id="reportCard" style="grid-column: 1 / -1;">
+      <h2>Final Report｜诊断报告</h2>
+      <div id="reportSummary"></div>
+      <h3>Two-Day Emergency Repair Recommendation｜两天冲刺建议</h3>
+      <div id="repairPlan" class="explainblock"></div>
+      <h3>Question Review｜逐题回顾</h3>
+      <div id="reviewTable"></div>
+    </section>
+  </main>
+</div>
+<div class="footer-note">This standalone HTML stores progress only in the current browser via localStorage. No internet connection is required.</div>
+
+<script>
+const QUESTIONS = [{"id": 1, "part": "A", "skill": "Sentence boundary / dependent clause", "answer": "A", "stem": "Which revision best fixes the sentence fragment?<br><strong>Although the critics praised the novel's vivid imagery.</strong>", "choices": {"A": "Although the critics praised the novel's vivid imagery, they found its plot predictable.", "B": "Although the critics praised. The novel's vivid imagery.", "C": "The critics praised although the novel's vivid imagery.", "D": "Although the critics praised the novel's vivid imagery and its plot."}, "explanation": "Although 引导的是从属从句，不能单独成句。A 增加了主句 they found its plot predictable，结构完整且逻辑自然。", "crux": "先判断 although-clause 是否有 main clause。MAP 会用“看起来很完整的从句”做 fragment trap。", "trap": "B 只是把 fragment 切成两个更碎的 fragment；C 语序错误；D 仍然没有主句。"}, {"id": 2, "part": "A", "skill": "Comma splice / semicolon", "answer": "B", "stem": "Choose the best correction for the comma splice.<br><strong>The archive contained thousands of letters, researchers needed months to organize them.</strong>", "choices": {"A": "The archive contained thousands of letters, researchers needed months to organize them.", "B": "The archive contained thousands of letters; researchers needed months to organize them.", "C": "The archive contained thousands of letters researchers needed months to organize them.", "D": "The archive contained thousands of letters, and needed months to organize them."}, "explanation": "两个完整独立分句不能只用逗号连接。B 用分号连接 closely related independent clauses，最简洁准确。", "crux": "看到逗号两边都能独立成句，就要警惕 comma splice。", "trap": "A 保留逗号拼接；C 变成 fused sentence；D 改变主语，好像 letters needed months。"}, {"id": 3, "part": "A", "skill": "Colon usage", "answer": "B", "stem": "Which sentence uses a colon correctly?", "choices": {"A": "The committee considered: cost, safety, and long-term impact.", "B": "The committee considered three factors: cost, safety, and long-term impact.", "C": "The committee considered three factors, cost: safety, and long-term impact.", "D": "The committee considered three factors: because cost, safety, and impact mattered."}, "explanation": "冒号前面必须是完整独立分句。The committee considered three factors 是完整句，后面 list 合理。", "crux": "colon 前必须站得住：完整主谓宾/表结构。不能把动词和宾语直接切开。", "trap": "A 冒号放在动词 considered 后，打断 verb-object；C 标点混乱；D because clause 与 list 结构不匹配。"}, {"id": 4, "part": "A", "skill": "Nonrestrictive relative clause", "answer": "B", "stem": "Which option correctly punctuates the nonessential information?", "choices": {"A": "Dr. Rivera who studies marine ecosystems warned that coral reefs are declining.", "B": "Dr. Rivera, who studies marine ecosystems, warned that coral reefs are declining.", "C": "Dr. Rivera who studies marine ecosystems, warned that coral reefs are declining.", "D": "Dr. Rivera, who studies marine ecosystems warned that coral reefs are declining."}, "explanation": "who studies marine ecosystems 是对 Dr. Rivera 的补充说明，不限定身份，应前后用逗号隔开。", "crux": "人名后面的补充说明通常是 nonessential，需要一对逗号。", "trap": "A 没有标出非限定信息；C 只放一个逗号；D 从句未闭合。"}, {"id": 5, "part": "A", "skill": "Dangling modifier", "answer": "C", "stem": "Which revision corrects the dangling modifier?<br><strong>After reviewing the evidence, the conclusion seemed too broad.</strong>", "choices": {"A": "After reviewing the evidence, the conclusion seemed too broad.", "B": "After the evidence was reviewing, the conclusion seemed too broad.", "C": "After reviewing the evidence, the researchers decided that the conclusion was too broad.", "D": "The conclusion, after reviewing the evidence, seemed too broad."}, "explanation": "After reviewing the evidence 的逻辑主语必须是能 review evidence 的人。C 的主语 researchers 与动作匹配。", "crux": "句首 -ing / after doing 的动作执行者，必须是逗号后主句主语。", "trap": "A/D 让 conclusion review evidence；B 语态形式错误。"}, {"id": 6, "part": "A", "skill": "Conjunctive adverb punctuation", "answer": "B", "stem": "Choose the correct punctuation with a conjunctive adverb.", "choices": {"A": "The proposal was ambitious, however, the budget was limited.", "B": "The proposal was ambitious; however, the budget was limited.", "C": "The proposal was ambitious however, the budget was limited.", "D": "The proposal was ambitious; however the budget, was limited."}, "explanation": "however 连接两个完整句时，前面通常用分号或句号，后面用逗号。", "crux": "however 不是 FANBOYS。两个完整句之间不能只靠 comma + however。", "trap": "A 是 comma splice；C 缺少句子边界；D however 后缺逗号且 budget 后逗号错误。"}, {"id": 7, "part": "A", "skill": "Possessive nouns", "answer": "C", "stem": "Which sentence correctly uses apostrophes?", "choices": {"A": "The students essays were displayed near the librarys entrance.", "B": "The student's essays were displayed near the library's entrance.", "C": "The students' essays were displayed near the library's entrance.", "D": "The student's essays were displayed near the librarys' entrance."}, "explanation": "students' essays 表示多个学生的作文；library's entrance 表示图书馆入口。", "crux": "先判断单数/复数，再放 apostrophe。students' = 多个学生的。", "trap": "B 变成一个学生的多篇作文；A/D 所有格错误。"}, {"id": 8, "part": "A", "skill": "Introductory dependent clause comma", "answer": "B", "stem": "Which sentence is punctuated correctly?", "choices": {"A": "Because the results were unexpected the team repeated the experiment.", "B": "Because the results were unexpected, the team repeated the experiment.", "C": "Because, the results were unexpected the team repeated the experiment.", "D": "Because the results were unexpected, and the team repeated the experiment."}, "explanation": "句首 because 从句后接主句时，中间用逗号。", "crux": "句首 dependent clause + comma + main clause。", "trap": "A 缺逗号；C because 后误加逗号；D 变成从句 + and 的不完整结构。"}, {"id": 9, "part": "A", "skill": "Subject-verb agreement", "answer": "B", "stem": "Which verb agrees with the subject?<br><strong>The collection of letters from early settlers ___ new details about migration routes.</strong>", "choices": {"A": "reveal", "B": "reveals", "C": "have revealed", "D": "were revealing"}, "explanation": "真正主语是 collection，单数；of letters 是介词短语干扰项，所以用 reveals。", "crux": "先划掉 of letters from early settlers，找核心主语 collection。", "trap": "A/C 被 letters 干扰；D 形式不合句意且主谓不一致。"}, {"id": 10, "part": "A", "skill": "Semicolon in complex lists", "answer": "B", "stem": "Which sentence uses semicolons correctly in a complex series?", "choices": {"A": "The survey included students from Austin, Texas, Denver, Colorado, and Portland, Oregon.", "B": "The survey included students from Austin, Texas; Denver, Colorado; and Portland, Oregon.", "C": "The survey included students from Austin; Texas, Denver; Colorado, and Portland; Oregon.", "D": "The survey included students; from Austin, Texas; Denver, Colorado; and Portland, Oregon."}, "explanation": "列表项目内部已有逗号时，用分号分隔项目，避免读者误读。", "crux": "复杂列表内部已经有 comma，项目之间用 semicolon 分组。", "trap": "A 容易读成六个地点；C/D 分号切分位置错误。"}, {"id": 11, "part": "B", "skill": "Past perfect / sequence of tenses", "answer": "C", "stem": "Choose the best verb tense.<br><strong>By the time the article was published, scientists ___ the original theory several times.</strong>", "choices": {"A": "revise", "B": "revised", "C": "had revised", "D": "will revise"}, "explanation": "By the time + past event 表示“在过去某时之前已经完成”，用 past perfect: had revised。", "crux": "past before past = had + past participle。", "trap": "B 只是一般过去，不能清楚表示 earlier past；A/D 时间不合。"}, {"id": 12, "part": "B", "skill": "Pronoun clarity", "answer": "C", "stem": "Which revision makes the pronoun reference clearest?<br><strong>When Maya discussed the article with Lena, she said the argument was weak.</strong>", "choices": {"A": "When Maya discussed the article with Lena, she said the argument was weak.", "B": "When Maya discussed the article with Lena, it said the argument was weak.", "C": "When Maya discussed the article with Lena, Maya said the argument was weak.", "D": "When Maya discussed the article with Lena, they said the argument was weak."}, "explanation": "she 可能指 Maya 或 Lena。C 重复 Maya，消除歧义。", "crux": "pronoun clarity > 避免重复。MAP 常选重复名词来消除歧义。", "trap": "A 保留歧义；B it 不能指人；D they 更不清楚。"}, {"id": 13, "part": "B", "skill": "Modifier placement", "answer": "B", "stem": "Which sentence places <em>only</em> correctly?", "choices": {"A": "The historian only examined documents from the capital, not from rural towns.", "B": "The historian examined only documents from the capital, not from rural towns.", "C": "Only the historian examined documents from the capital, not from rural towns.", "D": "The historian examined documents from the capital only, not from rural towns only."}, "explanation": "only 应靠近它限制的对象 documents from the capital，表示“只研究首都的文件”。", "crux": "only 放在谁前面，就限制谁。先问：到底 only 什么？", "trap": "A 像是“只做了 examined 这个动作”；C 表示只有这位历史学家做了；D 笨拙且重复。"}, {"id": 14, "part": "B", "skill": "Parallel structure", "answer": "C", "stem": "Choose the sentence with correct parallel structure.", "choices": {"A": "The course teaches students to evaluate sources, writing claims, and how to revise paragraphs.", "B": "The course teaches students evaluating sources, to write claims, and revising paragraphs.", "C": "The course teaches students to evaluate sources, to write claims, and to revise paragraphs.", "D": "The course teaches students evaluation of sources, claims writing, and paragraphs that are revised."}, "explanation": "三个并列动作都用 to + verb：to evaluate, to write, to revise。", "crux": "并列项必须同一语法形态。to evaluate / to write / to revise。", "trap": "A/B/D 混合了 infinitive, gerund, noun phrase, clause。"}, {"id": 15, "part": "B", "skill": "Logical comparison", "answer": "C", "stem": "Which sentence makes a logical comparison?", "choices": {"A": "The poems of Dickinson are more compressed than Whitman.", "B": "Dickinson's poems are more compressed than Whitman.", "C": "Dickinson's poems are more compressed than Whitman's poems.", "D": "Dickinson's poems are more compressed than writing by Whitman was."}, "explanation": "应该比较 poems 与 poems。C 比较 Dickinson's poems 和 Whitman's poems。", "crux": "比较对象必须同类：poems vs poems，不是 poems vs person。", "trap": "A/B 把 poems 和 Whitman 这个人比较；D 笨拙且结构不平行。"}, {"id": 16, "part": "B", "skill": "Commonly confused words / verb form", "answer": "B", "stem": "Which word best completes the sentence?<br><strong>The speaker's calm tone helped ___ the audience's reaction to the controversial claim.</strong>", "choices": {"A": "effect", "B": "affect", "C": "effected", "D": "affecting"}, "explanation": "affect 作动词，表示 influence。helped 后可接动词原形 affect。", "crux": "helped + base verb；affect = influence。", "trap": "effect 常作名词；effected 作动词时表示“实现/造成”，不合语境；D 形式错误。"}, {"id": 17, "part": "B", "skill": "Formal tone / academic diction", "answer": "B", "stem": "Which option best maintains a formal academic tone?", "choices": {"A": "The author's idea is kind of weird, but it sort of makes sense.", "B": "The author's claim may seem unusual, but the evidence makes it plausible.", "C": "The author's point is super strange, but okay.", "D": "The author is basically just saying random stuff that might work."}, "explanation": "B 用 may seem, claim, evidence, plausible，语气正式且有学术判断。", "crux": "formal academic tone = precise + evidence-based + controlled evaluation。", "trap": "A/C/D 口语化、模糊或评价失控。"}, {"id": 18, "part": "B", "skill": "Concision", "answer": "B", "stem": "Which revision is most concise without changing the meaning?<br><strong>Due to the fact that the samples were contaminated, the team repeated the test.</strong>", "choices": {"A": "Due to the fact that the samples were contaminated, the team repeated the test.", "B": "Because the samples were contaminated, the team repeated the test.", "C": "The samples were contaminated due to the team repeated the test.", "D": "The team repeated the test in the fact that samples were contaminated."}, "explanation": "due to the fact that 可以简化为 because，意思不变且更清楚。", "crux": "best revision 不只是语法对，还要 concise and clear。", "trap": "A 冗长；C/D 结构错误或意思混乱。"}, {"id": 19, "part": "B", "skill": "Subjunctive mood", "answer": "B", "stem": "Choose the sentence that uses the subjunctive mood correctly.", "choices": {"A": "If I was the editor, I would ask for stronger evidence.", "B": "If I were the editor, I would ask for stronger evidence.", "C": "If I am the editor, I would ask for stronger evidence.", "D": "If I be the editor, I would ask for stronger evidence."}, "explanation": "与事实相反或假设身份时，正式英语中用 If I were。", "crux": "formal hypothetical: If I were..., I would...", "trap": "A 口语可见但正式测试不佳；C 条件与 would 不匹配；D 形式错误。"}, {"id": 20, "part": "B", "skill": "Pronoun case", "answer": "B", "stem": "Which sentence uses pronoun case correctly?", "choices": {"A": "The decision was difficult for Lena and I.", "B": "The decision was difficult for Lena and me.", "C": "Me and Lena found the decision difficult.", "D": "The decision was difficult for I and Lena."}, "explanation": "for 是介词，后面用宾格 me；Lena and me 是介词宾语。", "crux": "介词后用 object case。把 Lena and 去掉：for me。", "trap": "A/D 用了主格 I；C 在正式写作中 compound subject 应用 Lena and I。"}, {"id": 21, "part": "C", "skill": "Topic sentence / central focus", "answer": "B", "stem": "Which sentence would make the best topic sentence if placed before sentence 1?", "choices": {"A": "Many people enjoy living in cities because cities offer jobs and entertainment.", "B": "Urban heat is not only a scientific issue but also a planning and equity problem.", "C": "Some cities have bicycles that can carry scientific equipment.", "D": "Trees are beautiful, and many neighborhoods need more of them."}, "explanation": "整段既讲 urban heat island，也讲规划与公平分布，B 能覆盖全文逻辑。", "crux": "topic sentence 必须覆盖全文主线，不是只覆盖例子或细节。", "trap": "A 太泛；C 只是后文例子；D 太窄且偏感受。"}, {"id": 22, "part": "C", "skill": "Parallel structure / sentence revision", "answer": "A", "stem": "What is the best revision of sentence 4?<br><strong>[4] In order to make city blocks cooler, planners can add reflective roofs, plant street trees, and designing parks that connect neighborhoods.</strong>", "choices": {"A": "In order to make city blocks cooler, planners can add reflective roofs, plant street trees, and design parks that connect neighborhoods.", "B": "In order to make city blocks cooler, planners can adding reflective roofs, plant street trees, and design parks that connect neighborhoods.", "C": "In order to make city blocks cooler, reflective roofs, street trees, and designing parks can be added by planners.", "D": "In order to make city blocks cooler, planners can add reflective roofs, planting street trees, and parks designed to connect neighborhoods."}, "explanation": "can 后三个并列动作都用动词原形：add, plant, design。", "crux": "modal can 后的并列动作必须统一 base verb。", "trap": "B/D 非平行；C 被动笨重且仍不如 A 清楚。"}, {"id": 23, "part": "C", "skill": "Subject-verb agreement / noun number", "answer": "B", "stem": "What is the best edit for sentence 5?<br><strong>[5] However, the benefit of these projects are not distributed equally.</strong>", "choices": {"A": "However, the benefit of these projects are not distributed equally.", "B": "However, the benefits of these projects are not distributed equally.", "C": "However, the benefits of these projects is not distributed equally.", "D": "However, the benefit of these projects were not distributing equally."}, "explanation": "此处指 multiple projects 的多个 benefits，benefits 是复数，配 are。", "crux": "benefits + are。of these projects 是干扰性介词短语。", "trap": "A 单数 benefit + are 不一致；C benefits + is 不一致；D 时态/语态错误。"}, {"id": 24, "part": "C", "skill": "Transition / logical relationship", "answer": "B", "stem": "Which transition should be added to the beginning of sentence 8 to best connect ideas?", "choices": {"A": "Similarly,", "B": "To address this problem,", "C": "For instance,", "D": "Nevertheless,"}, "explanation": "前面指出热风险分布不均，后面提出城市气候计划应测量社区温差，是解决问题的行动。", "crux": "先看前一句的问题，再看后一句是否提出解决方案。", "trap": "A 表示相似，不合；C 后面不是例子而是方案；D 表示转折，逻辑弱。"}, {"id": 25, "part": "C", "skill": "Evidence function / explanation", "answer": "B", "stem": "Which sentence, if added after sentence 9, would best explain why the example is relevant?", "choices": {"A": "Bicycles are less expensive than cars and are popular in many neighborhoods.", "B": "The sensors collected local data that a single citywide average would have hidden.", "C": "Many people ride bicycles for exercise, transportation, or recreation.", "D": "The project also required several volunteers to ride through the city."}, "explanation": "题目问 example 的相关性。B 明确说明 sensor-on-bicycle 项目如何帮助发现 neighborhood-level heat differences。", "crux": "example relevance 要连接回上文 claim，不是继续讲 example 的有趣细节。", "trap": "A/C/D 都与 bicycles 有关，但没有解释它如何支撑主张。"}, {"id": 26, "part": "C", "skill": "Affect/effect / word form", "answer": "B", "stem": "In sentence 10, which word is correct?<br><strong>The data helped officials decide where new trees would have the greatest ___.</strong>", "choices": {"A": "affect", "B": "effect", "C": "affected", "D": "effective"}, "explanation": "greatest 后需要名词；effect 是名词，表示 result/impact。", "crux": "greatest + noun。effect = 名词 result/impact。", "trap": "affect 是动词；affected 是形容词/过去分词；effective 是形容词。"}, {"id": 27, "part": "C", "skill": "Concluding sentence / synthesis", "answer": "B", "stem": "Which sentence would be the best concluding sentence for the passage?", "choices": {"A": "In conclusion, city heat can be solved easily if every resident plants one tree.", "B": "Therefore, reducing urban heat requires both environmental solutions and attention to who receives them.", "C": "Trees are the most beautiful part of any city climate plan.", "D": "Scientists should do more experiments about bicycles and sensors."}, "explanation": "B 同时总结 environmental solutions 和 equity，覆盖全文。", "crux": "conclusion 要 synthesize 全文，不夸大、不偏向单个例子。", "trap": "A 过度简化；C 主观且偏窄；D 把例子误当中心。"}];
+const PASSAGE_HTML = "<p><strong>[1]</strong> Many cities are warmer than surrounding rural areas, a pattern known as an urban heat island.</p>\n<p><strong>[2]</strong> Concrete and asphalt absorb sunlight during the day and release it slowly at night.</p>\n<p><strong>[3]</strong> Trees can reduce this effect because they provide shade and release moisture into the air.</p>\n<p><strong>[4]</strong> In order to make city blocks cooler, planners can add reflective roofs, plant street trees, and designing parks that connect neighborhoods.</p>\n<p><strong>[5]</strong> However, the benefit of these projects are not distributed equally.</p>\n<p><strong>[6]</strong> Wealthier areas often have more trees; low-income neighborhoods may have fewer parks and more pavement.</p>\n<p><strong>[7]</strong> This makes it harder for residents to stay cool during heat waves.</p>\n<p><strong>[8]</strong> A city climate plan should measure temperature differences at the neighborhood level.</p>\n<p><strong>[9]</strong> For example, one pilot project used sensors mounted on bicycles to map heat block by block.</p>\n<p><strong>[10]</strong> The data helped officials decide where new trees would have the greatest effect.</p>\n<p><strong>[11]</strong> Careful mapping does more than describe a problem; it guides practical action.</p>";
+let current = 0;
+let state = JSON.parse(localStorage.getItem('volaria_map_g10_state') || '{}');
+let timerSeconds = Number(localStorage.getItem('volaria_map_g10_timer') || 1800);
+let timerId = null;
+if (!state.answers) state.answers = {};
+if (!state.flags) state.flags = {};
+if (!state.notes) state.notes = {};
+if (!state.annotations) state.annotations = {};
+if (!state.passageAnnotations) state.passageAnnotations = {};
+
+function saveState() {
+  localStorage.setItem('volaria_map_g10_state', JSON.stringify(state));
+  localStorage.setItem('volaria_map_g10_timer', String(timerSeconds));
+}
+function fmt(sec) { const m=String(Math.floor(sec/60)).padStart(2,'0'); const s=String(sec%60).padStart(2,'0'); return `${m}:${s}`; }
+function updateTimer() {
+  document.getElementById('timer').textContent = fmt(timerSeconds);
+  if (timerSeconds <= 120) document.getElementById('timer').style.color = '#ffd1cb';
+}
+function startTimer() { if (timerId) return; timerId = setInterval(()=>{ if(timerSeconds>0){timerSeconds--; updateTimer(); saveState();} else {pauseTimer(); alert('Time is up. Generate your report.');} },1000); }
+function pauseTimer() { if (timerId) clearInterval(timerId); timerId=null; }
+
+function renderNav() {
+  const nav = document.getElementById('navgrid'); nav.innerHTML='';
+  QUESTIONS.forEach((q,i)=>{
+    const b=document.createElement('button'); b.className='qnav'; b.textContent=q.id;
+    if (i===current) b.classList.add('active');
+    const ans=state.answers[q.id];
+    if(ans) b.classList.add(ans===q.answer ? 'correct':'wrong');
+    if(state.flags[q.id]) b.classList.add('flagged');
+    b.onclick=()=>{ saveCurrentAnnotation(); current=i; renderQuestion(); };
+    nav.appendChild(b);
+  });
+}
+function renderStats() {
+  const answered = Object.keys(state.answers).length;
+  const correct = QUESTIONS.filter(q=>state.answers[q.id]===q.answer).length;
+  document.getElementById('score').textContent = correct;
+  document.getElementById('answered').textContent = answered;
+  document.getElementById('progressFill').style.width = `${answered/QUESTIONS.length*100}%`;
+  document.getElementById('progressText').textContent = `${answered}/27 completed · ${correct} correct`;
+  const misses = {};
+  QUESTIONS.forEach(q=>{ if(state.answers[q.id] && state.answers[q.id]!==q.answer) misses[q.skill]=(misses[q.skill]||0)+1; });
+  const box = document.getElementById('statsBox');
+  const entries = Object.entries(misses).sort((a,b)=>b[1]-a[1]);
+  if(!entries.length) { box.innerHTML='<div class="muted">No wrong-answer pattern yet.</div>'; return; }
+  box.innerHTML = entries.map(([k,v])=>`<div class="statrow"><span>${k}</span><strong>${v}</strong></div>`).join('');
+}
+function renderQuestion() {
+  const q=QUESTIONS[current];
+  document.getElementById('currentNo').textContent=q.id;
+  document.getElementById('partTag').textContent='Part '+q.part;
+  document.getElementById('skillTag').textContent=q.skill;
+  document.getElementById('qTitle').textContent='Question '+q.id;
+  const passageBox = document.getElementById('passageBox');
+  passageBox.style.display = q.part==='C' ? 'block' : 'none';
+  passageBox.innerHTML = q.part==='C' ? (state.passageAnnotations[q.id] || PASSAGE_HTML) : '';
+  const stemBox = document.getElementById('stemBox');
+  stemBox.innerHTML = state.annotations[q.id] || q.stem;
+  document.getElementById('noteBox').value = state.notes[q.id] || '';
+  const cb=document.getElementById('choicesBox'); cb.innerHTML='';
+  Object.entries(q.choices).forEach(([letter,text])=>{
+    const div=document.createElement('button'); div.className='choice'; div.innerHTML=`<strong>${letter}.</strong> ${text}`;
+    const chosen=state.answers[q.id];
+    if(chosen) {
+      if(letter===q.answer) div.classList.add('correct');
+      if(letter===chosen && chosen!==q.answer) div.classList.add('wrong');
+      if(letter===chosen) div.classList.add('selected');
+    }
+    div.onclick=()=>selectAnswer(letter);
+    cb.appendChild(div);
+  });
+  renderFeedback(); renderNav(); renderStats();
+}
+function selectAnswer(letter) {
+  const q=QUESTIONS[current];
+  state.answers[q.id]=letter; saveCurrentAnnotation(); saveState(); renderQuestion();
+}
+function renderFeedback() {
+  const q=QUESTIONS[current]; const fb=document.getElementById('feedbackBox'); const chosen=state.answers[q.id];
+  fb.className='feedback';
+  if(!chosen) {
+    fb.innerHTML='<h2>Feedback will appear here.</h2><div class="muted">选择答案后，会立刻显示正确/错误、考点、解释和 trap analysis。</div>';
+    return;
+  }
+  const ok=chosen===q.answer; fb.classList.add(ok?'good':'bad');
+  fb.innerHTML=`
+    <h2>${ok?'✅ Correct':'❌ Not quite'}</h2>
+    <div class="keyline"><span class="badge ${ok?'good':'bad'}">Your answer: ${chosen}</span><span class="badge good">Correct: ${q.answer}</span></div>
+    <div class="explainblock"><strong>Skill｜考点：</strong>${q.skill}</div>
+    <div class="explainblock"><strong>Rule / Crux｜关键判断：</strong>${q.crux}</div>
+    <div class="explainblock"><strong>Explanation｜解释：</strong>${q.explanation}</div>
+    <div class="explainblock"><strong>Trap Analysis｜陷阱：</strong>${q.trap}</div>`;
+}
+function showAnswer() {
+  const q=QUESTIONS[current]; state.answers[q.id]=q.answer; saveState(); renderQuestion();
+}
+function prevQuestion() { saveCurrentAnnotation(); if(current>0) current--; renderQuestion(); }
+function nextQuestion() { saveCurrentAnnotation(); if(current<QUESTIONS.length-1) current++; renderQuestion(); }
+function toggleFlag() { const q=QUESTIONS[current]; state.flags[q.id]=!state.flags[q.id]; saveState(); renderNav(); }
+function saveNotes() { const q=QUESTIONS[current]; state.notes[q.id]=document.getElementById('noteBox').value; saveState(); flash('Note saved.'); }
+function saveCurrentAnnotation() {
+  const q=QUESTIONS[current];
+  const stemBox=document.getElementById('stemBox');
+  if(stemBox && stemBox.innerHTML.trim()) state.annotations[q.id]=stemBox.innerHTML;
+  const passageBox=document.getElementById('passageBox');
+  if(q.part==='C' && passageBox && passageBox.innerHTML.trim()) state.passageAnnotations[q.id]=passageBox.innerHTML;
+  state.notes[q.id]=document.getElementById('noteBox') ? document.getElementById('noteBox').value : (state.notes[q.id]||'');
+  saveState();
+}
+function appendTag(tag) {
+  const box=document.getElementById('noteBox');
+  const prefix = box.value.trim() ? '\n' : '';
+  box.value += `${prefix}[${tag}] `;
+  box.focus(); saveNotes();
+}
+function highlightSelection(cls) {
+  const sel=window.getSelection();
+  if(!sel || sel.rangeCount===0 || sel.toString().trim()==='') { flash('Select text in the question first.'); return; }
+  const work=document.getElementById('workArea');
+  const range=sel.getRangeAt(0);
+  if(!work.contains(range.commonAncestorContainer)) { flash('Only text inside the question/passage can be annotated.'); return; }
+  const span=document.createElement('span'); span.className=cls; span.title=cls==='highlight'?'highlight':'grammar clue';
+  try { range.surroundContents(span); } catch(e) {
+    const text=sel.toString(); range.deleteContents(); span.textContent=text; range.insertNode(span);
+  }
+  sel.removeAllRanges(); saveCurrentAnnotation();
+}
+function clearAnnotations() {
+  const q=QUESTIONS[current]; delete state.annotations[q.id]; delete state.passageAnnotations[q.id]; saveState(); renderQuestion();
+}
+function flash(msg) {
+  const fb=document.getElementById('feedbackBox');
+  const old=fb.innerHTML;
+  fb.innerHTML = `<h2>${msg}</h2><div class="muted">继续作答或查看解释。</div>`;
+  setTimeout(()=>renderFeedback(),900);
+}
+function finishTest() {
+  saveCurrentAnnotation();
+  const report=document.getElementById('reportCard'); report.classList.add('visible');
+  const answered=Object.keys(state.answers).length;
+  const correct=QUESTIONS.filter(q=>state.answers[q.id]===q.answer).length;
+  const pct = Math.round(correct/QUESTIONS.length*100);
+  let band = 'Needs urgent repair before MAP';
+  if (correct>=24) band='Strong Grade 10 readiness';
+  else if (correct>=21) band='Likely Grade 10 average+ if timing is stable';
+  else if (correct>=17) band='Borderline: repair top error categories immediately';
+  const misses={};
+  QUESTIONS.forEach(q=>{ if(state.answers[q.id] && state.answers[q.id]!==q.answer) misses[q.skill]=(misses[q.skill]||0)+1; else if(!state.answers[q.id]) misses['Unanswered / pacing issue']=(misses['Unanswered / pacing issue']||0)+1; });
+  const sorted=Object.entries(misses).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('reportSummary').innerHTML = `<div class="keyline"><span class="badge good">Score: ${correct}/27</span><span class="badge">${pct}%</span><span class="badge warn">${band}</span><span class="badge">Answered: ${answered}/27</span></div>`;
+  let plan = '';
+  if(sorted.length===0) plan='No major error pattern appeared. Use Day 2 for timed mixed practice and trap review.';
+  else {
+    const top=sorted.slice(0,4).map(([k,v])=>`<li><strong>${k}</strong>: ${v} issue(s)</li>`).join('');
+    plan = `<p><strong>Repair these first:</strong></p><ol>${top}</ol><p><strong>Two-day strategy:</strong> Day 1 repair the top 2 categories and redo missed items orally. Day 2 complete one timed mixed set and rehearse the decision routine: complete sentence? main subject? modifier attachment? clause punctuation? clearest and most concise revision?</p>`;
+  }
+  document.getElementById('repairPlan').innerHTML=plan;
+  const rows=QUESTIONS.map(q=>{
+    const ans=state.answers[q.id]||'—'; const ok=ans===q.answer;
+    return `<tr><td>Q${q.id}</td><td>${q.part}</td><td>${q.skill}</td><td>${ans}</td><td>${q.answer}</td><td>${ok?'✅':'❌'}</td><td>${q.crux}</td></tr>`;
+  }).join('');
+  document.getElementById('reviewTable').innerHTML=`<table><thead><tr><th>Q</th><th>Part</th><th>Skill</th><th>Your</th><th>Correct</th><th>Result</th><th>Key Rule</th></tr></thead><tbody>${rows}</tbody></table>`;
+  report.scrollIntoView({behavior:'smooth', block:'start'});
+}
+function resetAll(confirmFirst=true) {
+  if(confirmFirst && !confirm('Reset all answers, notes, annotations and timer?')) return;
+  state={answers:{},flags:{},notes:{},annotations:{},passageAnnotations:{}}; timerSeconds=1800; saveState(); updateTimer(); renderQuestion(); document.getElementById('reportCard').classList.remove('visible');
+}
+updateTimer(); renderQuestion();
+window.addEventListener('beforeunload', saveCurrentAnnotation);
+</script>
+</body>
+</html>
